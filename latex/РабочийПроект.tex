@@ -1,0 +1,414 @@
+%\usepackage{makecell} % добавить в преамбулу
+
+\section{Рабочий проект}
+
+\subsection{Спецификация классов программной системы}
+
+В данном разделе приведено описание основных классов и модулей информационно-аналитической системы, реализованных в процессе разработки серверной и клиентской части приложения. Для каждого класса указываются его назначение, основные методы и функции, а также описание выполняемых операций.
+
+\subsubsection{Класс User (модель пользователя)}
+
+Класс \texttt{User} (модуль \texttt{models/user.py}) предназначен для представления учётной записи пользователя в системе. Модель реализована с использованием ORM SQLAlchemy и содержит сведения о пользователе: ФИО, адрес электронной почты, пароль, роль, факультет и кафедру. Класс используется при аутентификации пользователей, разграничении прав доступа и формировании статистики.
+
+Описание методов класса \texttt{User} представлено в таблице~\ref{tab:class_user}.
+
+\begin{xltabular}{\textwidth}{|>{\raggedright\arraybackslash}p{6cm}|c|X|}
+	\caption{Методы класса \texttt{User} (\texttt{models/user.py})\label{tab:class_user}}\\ \hline
+	\centrow Метод & \centrow Доступ & \centrow Описание \\ \hline
+	\endfirsthead
+	\continuecaption{Продолжение таблицы \ref{tab:class_user}}
+	\centrow Метод & \centrow Доступ & \centrow Описание \\ \hline
+	\finishhead
+	\texttt{\_\_init\_\_(self, email, password, role)} & public & Конструктор объекта пользователя \\ \hline
+	\texttt{verify\_password(self, password)} & public & Проверяет корректность пароля пользователя \\ \hline
+	\texttt{create\_tokens(self)} & public & Генерирует JWT-токены пользователя \\ \hline
+	\texttt{to\_dict(self)} & public & Преобразует объект пользователя в словарь \\ \hline
+\end{xltabular}
+
+\subsubsection{Класс Faculty (модель факультета)}
+
+Класс \texttt{Faculty} (модуль \texttt{models/faculty.py}) предназначен для хранения информации о факультетах образовательной организации. Модель используется при распределении пользователей по факультетам и формировании статистических данных.
+
+Описание методов класса \texttt{Faculty} представлено в таблице~\ref{tab:class_faculty}.
+
+\begin{xltabular}{\textwidth}{|>{\raggedright\arraybackslash}p{6cm}|c|X|}
+	\caption{Методы класса \texttt{Faculty} (\texttt{models/faculty.py})\label{tab:class_faculty}}\\ \hline
+	\centrow Метод & \centrow Доступ & \centrow Описание \\ \hline
+	\endfirsthead
+	\continuecaption{Продолжение таблицы \ref{tab:class_faculty}}
+	\centrow Метод & \centrow Доступ & \centrow Описание \\ \hline
+	\finishhead
+	\texttt{\_\_init\_\_(self, name, code)} & public & Конструктор объекта факультета \\ \hline
+	\texttt{get\_departments(self)} & public & Возвращает список кафедр факультета \\ \hline
+	\texttt{count\_documents(self)} & public & Подсчитывает количество документов факультета \\ \hline
+\end{xltabular}
+
+\subsubsection{Класс Department (модель кафедры)}
+
+Класс \texttt{Department} (модуль \texttt{models/department.py}) предназначен для хранения информации о кафедрах образовательной организации. Модель используется при регистрации пользователей, распределении документов и формировании статистики.
+
+Описание методов класса \texttt{Department} представлено в таблице~\ref{tab:class_department}.
+
+\begin{xltabular}{\textwidth}{|>{\raggedright\arraybackslash}p{6cm}|c|X|}
+	\caption{Методы класса \texttt{Department} (\texttt{models/department.py})\label{tab:class_department}}\\ \hline
+	\centrow Метод & \centrow Доступ & \centrow Описание \\ \hline
+	\endfirsthead
+	\continuecaption{Продолжение таблицы \ref{tab:class_department}}
+	\centrow Метод & \centrow Доступ & \centrow Описание \\ \hline
+	\finishhead
+	\texttt{\_\_init\_\_(self, name, faculty\_id)} & public & Конструктор объекта кафедры \\ \hline
+	\texttt{get\_users(self)} & public & Возвращает список пользователей кафедры \\ \hline
+	\texttt{count\_manuals(self)} & public & Подсчитывает количество документов кафедры \\ \hline
+\end{xltabular}
+
+\subsubsection{Класс Manual (модель методических указаний)}
+
+Класс \texttt{Manual} (модуль \texttt{models/manual.py}) предназначен для хранения информации о методических указаниях, загружаемых пользователями системы. Модель содержит сведения о файле, статусе проверки и результатах обработки документа.
+
+Описание методов класса \texttt{Manual} представлено в таблице~\ref{tab:class_manual}.
+
+\begin{xltabular}{\textwidth}{|>{\raggedright\arraybackslash}p{6cm}|c|X|}
+	\caption{Методы класса \texttt{Manual} (\texttt{models/manual.py})\label{tab:class_manual}}\\ \hline
+	\centrow Метод & \centrow Доступ & \centrow Описание \\ \hline
+	\endfirsthead
+	\continuecaption{Продолжение таблицы \ref{tab:class_manual}}
+	\centrow Метод & \centrow Доступ & \centrow Описание \\ \hline
+	\finishhead
+	\texttt{\_\_init\_\_(self, title, filename)} & public & Конструктор объекта методических указаний \\ \hline
+	\texttt{set\_status(self, status)} & public & Устанавливает статус обработки документа \\ \hline
+	\texttt{get\_report(self)} & public & Возвращает путь к PDF-отчёту \\ \hline
+	\texttt{mark\_checked(self)} & public & Помечает документ как проверенный \\ \hline
+\end{xltabular}
+
+\subsubsection{Класс Tutorial (модель учебного пособия)}
+
+Класс \texttt{Tutorial} (модуль \texttt{models/tutorial.py}) предназначен для хранения информации об учебных пособиях, загружаемых в систему. Модель используется модулем проверки документов и системой статистики.
+
+Описание методов класса \texttt{Tutorial} представлено в таблице~\ref{tab:class_tutorial}.
+
+
+\begin{xltabular}{\textwidth}{|>{\raggedright\arraybackslash}p{6cm}|c|X|}
+	\caption{Методы класса \texttt{Tutorial} (\texttt{models/tutorial.py})\label{tab:class_tutorial}}\\ \hline
+	\centrow Метод & \centrow Доступ & \centrow Описание \\ \hline
+	\endfirsthead
+	\continuecaption{Продолжение таблицы \ref{tab:class_tutorial}}
+	\centrow Метод & \centrow Доступ & \centrow Описание \\ \hline
+	\finishhead
+	\texttt{\_\_init\_\_(self, title, filename)} & public & Конструктор объекта учебного пособия \\ \hline
+	\texttt{set\_status(self, status)} & public & Устанавливает статус проверки документа \\ \hline
+	\texttt{generate\_preview(self)} & public & Формирует предварительную информацию о документе \\ \hline
+\end{xltabular}
+
+\subsubsection{Класс Monograph (модель монографии)}
+
+Класс \texttt{Monograph} (модуль \texttt{models/monograph.py}) предназначен для хранения сведений о монографиях, обрабатываемых системой. Модель используется при проверке документов и формировании статистических данных.
+
+Описание методов класса \texttt{Monograph} представлено в таблице~\ref{tab:class_monograph}.
+
+\begin{xltabular}{\textwidth}{|>{\raggedright\arraybackslash}p{6cm}|c|X|}
+	\caption{Методы класса \texttt{Monograph} (\texttt{models/monograph.py})\label{tab:class_monograph}}\\ \hline
+	\centrow Метод & \centrow Доступ & \centrow Описание \\ \hline
+	\endfirsthead
+	\continuecaption{Продолжение таблицы \ref{tab:class_monograph}}
+	\centrow Метод & \centrow Доступ & \centrow Описание \\ \hline
+	\finishhead
+	\texttt{\_\_init\_\_(self, title, filename)} & public & Конструктор объекта монографии \\ \hline
+	\texttt{set\_status(self, status)} & public & Устанавливает статус обработки монографии \\ \hline
+	\texttt{export\_metadata(self)} & public & Выполняет экспорт метаданных документа \\ \hline
+\end{xltabular}
+
+\subsubsection{Модуль проверки документов}
+
+Модуль проверки документов является основным компонентом информационно-аналитической системы и предназначен для автоматизированного анализа учебно-методических материалов на соответствие установленным требованиям оформления.
+
+Модуль реализует загрузку DOCX-документов, их анализ, выявление ошибок форматирования, формирование визуальной разметки нарушений и генерацию итогового PDF-отчёта.
+
+Основная логика модуля реализована в следующих компонентах:
+\begin{enumerate}
+	\item \texttt{checker.py} — основной модуль проверки документов.
+	
+	\item \texttt{highlight\_errors.py} — модуль визуального выделения ошибок в документе.
+	
+	\item \texttt{pdf\_report.py} — модуль формирования PDF-отчётов.
+	
+	\item \texttt{schemas/checker.py} — схемы валидации входных данных.
+\end{enumerate}
+
+Описание функций модуля \texttt{checker.py} представлено в таблице~\ref{tab:module_checker}.
+
+\begin{xltabular}{\textwidth}{|>{\raggedright\arraybackslash}p{6cm}|c|X|}
+	\caption{Функции модуля \texttt{checker.py}\label{tab:module_checker}}\\ \hline
+	\centrow Функция & \centrow Доступ & \centrow Описание \\ \hline
+	\endfirsthead
+	\continuecaption{Продолжение таблицы \ref{tab:module_checker}}
+	\centrow Функция & \centrow Доступ & \centrow Описание \\ \hline
+	\finishhead
+	\texttt{check\_document(file\_path)} & public & Выполняет комплексную проверку DOCX-документа \\ \hline
+	\texttt{check\_margins(document)} & public & Проверяет параметры полей страницы \\ \hline
+	\texttt{check\_fonts(document)} & public & Проверяет шрифты и размеры текста \\ \hline
+	\texttt{check\_headings(document)} & public & Проверяет корректность заголовков \\ \hline
+	\texttt{check\_paragraphs(document)} & public & Проверяет параметры абзацев и интервалов \\ \hline
+	\texttt{check\_tables(document)} & public & Проверяет оформление таблиц \\ \hline
+	\texttt{check\_images(document)} & public & Проверяет оформление изображений \\ \hline
+	\texttt{collect\_errors(errors)} & private & Формирует итоговый список ошибок \\ \hline
+\end{xltabular}
+
+Описание функций модуля \texttt{highlight\_errors.py} представлено в таблице~\ref{tab:module_highlight}.
+
+\begin{xltabular}{\textwidth}{|>{\raggedright\arraybackslash}p{6cm}|c|X|}
+	\caption{Функции модуля \texttt{highlight\_errors.py}\label{tab:module_highlight}}\\ \hline
+	\centrow Функция & \centrow Доступ & \centrow Описание \\ \hline
+	\endfirsthead
+	\continuecaption{Продолжение таблицы \ref{tab:module_highlight}}
+	\centrow Функция & \centrow Доступ & \centrow Описание \\ \hline
+	\finishhead
+	\texttt{highlight\_document(input\_path, output\_path)} & public & Создаёт копию документа с выделением ошибок \\ \hline
+	\texttt{highlight\_paragraph(paragraph)} & private & Выделяет ошибочный абзац цветом \\ \hline
+	\texttt{highlight\_table(table)} & private & Выделяет ошибки оформления таблиц \\ \hline
+	\texttt{save\_highlighted\_document(path)} & private & Сохраняет документ с разметкой ошибок \\ \hline
+\end{xltabular}
+
+\subsubsection{Модуль генерации титульных листов}
+
+Модуль генерации титульных листов предназначен для автоматизированного формирования титульной части учебно-методических документов в соответствии с установленными требованиями оформления.
+
+Модуль реализует шаблонный подход к генерации DOCX-документов и обеспечивает автоматическое заполнение титульных страниц на основе пользовательских данных.
+
+Основная логика генерации реализована в следующих компонентах:
+\begin{enumerate}
+	\item \texttt{title\_page.py} — маршруты API генерации титульных листов.
+	
+	\item \texttt{title\_page\_generator.py} — модуль формирования DOCX-документа.
+	
+	\item \texttt{schemas/title\_page.py} — схемы проверки входных данных.
+\end{enumerate}
+
+Описание функций модуля \texttt{title\_page.py} представлено в таблице~\ref{tab:module_titlepage}.
+
+\begin{xltabular}{\textwidth}{|>{\raggedright\arraybackslash}p{6cm}|c|X|}
+	\caption{Функции модуля \texttt{title\_page.py}\label{tab:module_titlepage}}\\ \hline
+	\centrow Функция & \centrow Доступ & \centrow Описание \\ \hline
+	\endfirsthead
+	\continuecaption{Продолжение таблицы \ref{tab:module_titlepage}}
+	\centrow Функция & \centrow Доступ & \centrow Описание \\ \hline
+	\finishhead
+	\texttt{generate\_manual(data)} & public & Генерирует титульный лист методических указаний \\ \hline
+	\texttt{generate\_tutorial(data)} & public & Генерирует титульный лист учебного пособия \\ \hline
+	\texttt{generate\_monograph(data)} & public & Генерирует титульный лист монографии \\ \hline
+	\texttt{validate\_title\_page(data)} & private & Проверяет корректность входных данных \\ \hline
+\end{xltabular}
+
+Описание функций модуля \texttt{title\_page\_generator.py} представлено в таблице~\ref{tab:module_titlegenerator}.
+
+\begin{xltabular}{\textwidth}{|>{\raggedright\arraybackslash}p{6cm}|c|X|}
+	\caption{Функции модуля \texttt{title\_page\_generator.py}\label{tab:module_titlegenerator}}\\ \hline
+	\centrow Функция & \centrow Доступ & \centrow Описание \\ \hline
+	\endfirsthead
+	\continuecaption{Продолжение таблицы \ref{tab:module_titlegenerator}}
+	\centrow Функция & \centrow Доступ & \centrow Описание \\ \hline
+	\finishhead
+	\texttt{create\_document()} & public & Создаёт структуру DOCX-документа \\ \hline
+	\texttt{add\_title\_content(document, data)} & public & Добавляет текстовые блоки титульного листа \\ \hline
+	\texttt{apply\_styles(document)} & public & Применяет параметры форматирования \\ \hline
+	\texttt{save\_document(document, path)} & public & Сохраняет итоговый DOCX-файл \\ \hline
+\end{xltabular}
+
+\subsubsection{Модуль формирования PDF-отчётов}
+
+Модуль формирования PDF-отчётов предназначен для автоматизированного создания структурированных отчётов по результатам проверки документов.
+
+Модуль получает результаты анализа документа, выполняет группировку ошибок и формирует итоговый PDF-документ с информацией о найденных нарушениях.
+
+Основная логика реализована в модуле \texttt{pdf\_report.py}.
+Описание функций модуля \texttt{pdf\_report.py} представлено в таблице~\ref{tab:module_pdfreport}.
+
+\begin{xltabular}{\textwidth}{|>{\raggedright\arraybackslash}p{6cm}|c|X|}
+	\caption{Функции модуля \texttt{pdf\_report.py}\label{tab:module_pdfreport}}\\ \hline
+	\centrow Функция & \centrow Доступ & \centrow Описание \\ \hline
+	\endfirsthead
+	\continuecaption{Продолжение таблицы \ref{tab:module_pdfreport}}
+	\centrow Функция & \centrow Доступ & \centrow Описание \\ \hline
+	\finishhead
+	\texttt{generate\_pdf\_report(errors, document\_info)} & public & Формирует PDF-отчёт по результатам проверки \\ \hline
+	\texttt{group\_errors(errors)} & public & Выполняет группировку однотипных ошибок \\ \hline
+	\texttt{build\_statistics(errors)} & public & Формирует статистику нарушений \\ \hline
+	\texttt{create\_report\_header(pdf)} & private & Создаёт заголовочную часть отчёта \\ \hline
+	\texttt{create\_error\_table(pdf, errors)} & private & Формирует таблицу ошибок \\ \hline
+	\texttt{save\_pdf(path)} & private & Сохраняет итоговый PDF-документ \\ \hline
+\end{xltabular}
+
+\subsection{Системное тестирование}
+
+Системное тестирование информационно-аналитической системы проводилось в соответствии со сценариями использования, определёнными в техническом задании. В процессе тестирования проверялись основные функции системы: генерация титульных листов, автоматическая проверка документов и формирование PDF-отчётов.
+
+Тестирование выполнялось в операционной системе Windows 11 с использованием веб-браузера Google Chrome. Корректность работы системы подтверждена результатами выполнения тест-кейсов и соответствующими скриншотами интерфейса.
+
+\subsubsection{Сводная таблица тест-кейсов}
+
+Сводная информация о выполненных тест-кейсах представлена в таблице~\ref{tab:testcases}.
+
+\begin{xltabular}{\textwidth}{|>{\centering\arraybackslash}p{2cm}|X|>{\centering\arraybackslash}p{3cm}|}
+	\caption{Сводная таблица тест-кейсов\label{tab:testcases}}\\ \hline
+	\centrow ID & \centrow Название тест-кейса & \centrow Результат \\ \hline
+	\endfirsthead
+	
+	\continuecaption{Продолжение таблицы \ref{tab:testcases}}
+	\centrow ID & \centrow Название тест-кейса & \centrow Результат \\ \hline
+	\finishhead
+	
+	TC-01 & Генерация титульного листа учебного издания & Пройден \\ \hline
+	TC-02 & Автоматическая проверка DOCX-документа & Пройден \\ \hline
+	TC-03 & Формирование PDF-отчёта о результатах проверки & Пройден \\ \hline
+	TC-04 & Скачивание сформированного PDF-отчёта & Пройден \\ \hline
+\end{xltabular}
+
+\subsubsection{TC-01. Генерация титульного листа учебного издания}
+
+Предусловие: пользователь авторизован в системе и открыта страница генерации титульных листов.
+
+Шаги:
+\begin{enumerate}
+	\item Выбрать тип документа.
+	\item Заполнить поля формы генерации.
+	\item Нажать кнопку «Сгенерировать».
+\end{enumerate}
+
+Ожидаемый результат: система формирует DOCX-документ с титульным листом и автоматически предоставляет файл для скачивания.
+
+Фактический результат: пройден.
+
+На рисунке~\ref{fig:titlegen} представлен интерфейс генерации титульного листа.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth]{titlegen.png}
+	\caption{Интерфейс генерации титульного листа}
+	\label{fig:titlegen}
+\end{figure}
+
+На рисунке~\ref{fig:titllist} представлен результат генерации титульного листа.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth]{titllist.png}
+	\caption{Результат генерации титульного листа}
+	\label{fig:titllist}
+\end{figure}
+
+\subsubsection{TC-02. Автоматическая проверка DOCX-документа}
+
+Предусловие: пользователь авторизован и открыта страница проверки документов.
+
+Шаги:
+\begin{enumerate}
+	\item Загрузить DOCX-документ.
+	\item Запустить проверку документа.
+\end{enumerate}
+
+Ожидаемый результат: система выполняет анализ документа, определяет ошибки оформления и отображает результаты проверки.
+
+Фактический результат: пройден.
+
+На рисунке~\ref{fig:vizualproverki} представлен пример разметки при проверке документа.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth]{vizualproverki.png}
+	\caption{Пример разметки при проверке документа}
+	\label{fig:vizualproverki}
+\end{figure}
+
+\subsubsection{TC-03. Формирование PDF-отчёта о результатах проверки}
+
+Предусловие: проверка документа успешно завершена.
+
+Шаги:
+\begin{enumerate}
+	\item Выполнить проверку документа.
+	\item Нажать кнопку формирования отчёта.
+\end{enumerate}
+
+Ожидаемый результат: система автоматически формирует PDF-отчёт с перечнем найденных ошибок.
+
+Фактический результат: пройден.
+
+На рисунке~\ref{fig:otchetoproverke} представлен пример сформированного PDF-отчёта.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth]{otchetoproverke.png}
+	\caption{PDF-отчёт о результатах проверки}
+	\label{fig:otchetoproverke}
+\end{figure}
+
+\subsubsection{TC-04. Скачивание сформированного PDF-отчёта}
+
+Предусловие: PDF-отчёт успешно сформирован.
+
+Шаги:
+\begin{enumerate}
+	\item Нажать кнопку скачивания отчёта.
+\end{enumerate}
+
+Ожидаемый результат: пользователю загружается PDF-файл с результатами проверки документа.
+
+Фактический результат: пройден.
+
+\subsubsection{Результаты тестирования}
+
+В ходе тестирования были успешно проверены основные функции информационно-аналитической системы. Все тест-кейсы завершились успешно, ошибки в работе системы выявлены не были.
+
+Результаты тестирования подтвердили:
+\begin{itemize}
+	\item корректность генерации титульных листов;
+	\item правильность проверки DOCX-документов;
+	\item корректность формирования PDF-отчётов;
+	\item стабильность взаимодействия клиентской и серверной части системы.
+\end{itemize}
+
+Система соответствует требованиям технического задания и готова к эксплуатации.
+
+\subsubsection{Нефункциональное тестирование}
+
+Помимо функционального тестирования были проверены нефункциональные требования, предъявляемые к информационно-аналитической системе.
+
+\textbf{Быстродействие.}
+Проверка DOCX-документов объёмом до 100 страниц выполняется в среднем не более чем за 15–20 секунд. Генерация титульных листов и формирование PDF-отчётов занимают менее 5 секунд. Загрузка страниц веб-интерфейса выполняется без заметных задержек.
+
+\textbf{Корректность логирования.}
+Система фиксирует основные события работы приложения:
+\begin{itemize}
+	\item авторизацию пользователей;
+	\item ошибки проверки документов;
+	\item генерацию титульных листов;
+	\item формирование PDF-отчётов;
+	\item ошибки серверной части.
+\end{itemize}
+
+Записи сохраняются в журнале с указанием даты и времени возникновения события.
+
+\textbf{Совместимость с браузерами.}
+Клиентская часть системы протестирована в браузерах Google Chrome, Mozilla Firefox и Microsoft Edge. Во всех браузерах корректно отображаются элементы интерфейса, формы загрузки файлов и результаты проверки документов.
+
+\textbf{Надёжность.}
+При возникновении ошибок обработки документов система корректно завершает выполнение операций и предотвращает повреждение данных. При повторном запуске приложения работоспособность системы полностью восстанавливается.
+
+\textbf{Безопасность.}
+Доступ к основным функциям системы предоставляется только авторизованным пользователям. Реализована проверка JWT-токенов и разграничение прав доступа между обычными пользователями и администраторами.
+
+Все нефункциональные требования выполнены в полном объёме.
+
+\subsubsection{Вывод по результатам тестирования}
+
+В ходе системного тестирования были успешно проверены функциональные и нефункциональные возможности информационно-аналитической системы.
+
+Результаты тестирования подтвердили:
+\begin{itemize}
+	\item корректность проверки учебно-методических документов;
+	\item правильность генерации титульных листов;
+	\item корректность формирования PDF-отчётов;
+	\item стабильность взаимодействия клиентской и серверной части;
+	\item соответствие системы требованиям технического задания.
+\end{itemize}
+
+Разработанная информационно-аналитическая система функционирует стабильно, обеспечивает автоматизацию основных процессов редакционно-издательского отдела и готова к практической эксплуатации.
